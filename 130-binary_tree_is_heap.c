@@ -1,13 +1,13 @@
 #include "binary_trees.h"
 
 /**
- * enqueue_item_1 - Adds an item to a queue.
+ * enqueue_item_2 - Adds an item to a queue.
  * @queue_h: A pointer to the queue's head.
  * @queue_t: A pointer to the queue's tail.
  * @n: A pointer to the queue's size value.
  * @item: The item to add to the queue.
  */
-void enqueue_item_1(binary_tree_t **queue_h, binary_tree_t **queue_t,
+void enqueue_item_2(binary_tree_t **queue_h, binary_tree_t **queue_t,
 	int *n, void *item)
 {
 	binary_tree_t *new_node;
@@ -33,14 +33,14 @@ void enqueue_item_1(binary_tree_t **queue_h, binary_tree_t **queue_t,
 }
 
 /**
- * dequeue_item_1 - Removes an item from a queue.
+ * dequeue_item_2 - Removes an item from a queue.
  * @queue_h: A pointer to the queue's head.
  * @queue_t: A pointer to the queue's tail.
  * @n: A pointer to the queue's size value.
  *
  * Return: The value of the removed queue.
  */
-binary_tree_t *dequeue_item_1(binary_tree_t **queue_h,
+binary_tree_t *dequeue_item_2(binary_tree_t **queue_h,
 	binary_tree_t **queue_t, int *n)
 {
 	binary_tree_t *tmp0;
@@ -90,7 +90,7 @@ int binary_tree_is_complete(const binary_tree_t *tree)
 	if (tree != NULL)
 	{
 		is_complete = 1;
-		enqueue_item_1(&queue_head, &queue_tail, &n, (void *)tree);
+		enqueue_item_2(&queue_head, &queue_tail, &n, (void *)tree);
 		while (n > 0)
 		{
 			current = queue_head;
@@ -107,18 +107,66 @@ int binary_tree_is_complete(const binary_tree_t *tree)
 				}
 				else if (current->parent != NULL)
 				{
-					enqueue_item_1(
+					enqueue_item_2(
 						&queue_head, &queue_tail, &n, (void *)(current->parent->left)
 					);
-					enqueue_item_1(
+					enqueue_item_2(
 						&queue_head, &queue_tail, &n, (void *)(current->parent->right)
 					);
 				}
 			}
-			dequeue_item_1(&queue_head, &queue_tail, &n);
+			dequeue_item_2(&queue_head, &queue_tail, &n);
 		}
 		while (n > 0)
-			dequeue_item_1(&queue_head, &queue_tail, &n);
+			dequeue_item_2(&queue_head, &queue_tail, &n);
 	}
 	return (is_complete);
+}
+
+/**
+ * binary_heap_checker - Checks if a binary tree is a max binary heap.
+ * @tree: The binary tree.
+ * @max: The maximum value in the binary tree.
+ * @is_max_heap: A pointer to the tree's max binary heap flag.
+ */
+void binary_heap_checker(const binary_tree_t *tree, int max, int *is_max_heap)
+{
+	if (tree != NULL)
+	{
+		if (tree->n <= max)
+		{
+			binary_heap_checker(tree->left, tree->n, is_max_heap);
+			binary_heap_checker(tree->right, tree->n, is_max_heap);
+		}
+		else
+		{
+			if (is_max_heap != NULL)
+			{
+				*is_max_heap = 0;
+			}
+		}
+	}
+}
+
+/**
+ * binary_tree_is_heap - Checks if a binary tree is a max binary heap.
+ * @tree: The binary tree.
+ *
+ * Return: 1 if the tree is a max binary heap, otherwise 0.
+ */
+int binary_tree_is_heap(const binary_tree_t *tree)
+{
+	int is_complete = 0;
+	int is_max_bin_heap = 0;
+
+	if (tree != NULL)
+	{
+		is_complete = binary_tree_is_complete(tree);
+		if (is_complete == 1)
+		{
+			is_max_bin_heap = 1;
+			binary_heap_checker(tree, INT_MAX, &is_max_bin_heap);
+		}
+	}
+	return (is_max_bin_heap);
 }

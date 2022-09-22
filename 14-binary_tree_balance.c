@@ -1,46 +1,47 @@
 #include "binary_trees.h"
-/**
- * binary_tree_height - height of a binary tree.
- * @tree: pointer root node of the tree to measure the height.
- *
- * Return: If tree is NULL, your function must return 0, else return height.
- */
-size_t binary_tree_height(const binary_tree_t *tree)
-{
-    if (tree)
-    {
-        size_t lh = 0, rh = 0;
 
-        lh = tree->left ? 1 + binary_tree_height(tree->left) : 0;
-        rh = tree->right ? 1 + binary_tree_height(tree->right) : 0;
-        return ((lh > rh) ? lh : rh);
-    }
-    return (0);
-}
 /**
- * binary_tree_balance - function that measures the balance
- * factor of a binary tree.
- * @tree: pointer to the root node of the tree to measure the balance factor.
- * Return: the Balance factor, if tree is NULL return 0.
+ * tree_height - Computes the height of a binary tree.
+ * @tree: The binary tree.
+ * @n: The accumulated height of the current tree.
+ * @height: A pointer to the tree's maximum height value.
+ */
+void tree_height(const binary_tree_t *tree, int n, int *height)
+{
+	if (tree != NULL)
+	{
+		if ((tree->left == NULL) && (tree->right == NULL))
+		{
+			if (n > *height)
+			{
+				*height = n;
+			}
+		}
+		else
+		{
+			tree_height(tree->left, n + 1, height);
+			tree_height(tree->right, n + 1, height);
+		}
+	}
+}
+
+/**
+ * binary_tree_balance - Computes the balance factor of a binary tree.
+ * @tree: The binary tree.
+ *
+ * Return: The balance factor of the given binary tree.
  */
 int binary_tree_balance(const binary_tree_t *tree)
 {
-    /*Balance Factor = height(left-child) - height(right-child)*/
+	int balance_factor = 0;
+	int left_height = 0;
+	int right_height = 0;
 
-    int hl = 0, hr = 0;
-
-    if (tree == NULL)
-    {
-        return (0);
-    }
-    if (tree->left)
-    {
-        hl = binary_tree_height(tree->left);
-    }
-
-    if (tree->right)
-    {
-        hr = binary_tree_height(tree->right);
-    }
-    return (hl - hr);
+	if (tree != NULL)
+	{
+		tree_height(tree->left, 1, &left_height);
+		tree_height(tree->right, 1, &right_height);
+	}
+	balance_factor = left_height - right_height;
+	return (balance_factor);
 }
